@@ -8,22 +8,9 @@
 #define SPEED       25   
 #define COLOR_ORDER GRB
 
-// Enable this define and connect pins RX, SDA, and SCL to the Uppity Spinner
-// Rotary Board. Connect RX to A, SDA, to B, and SCL to C. Connect ground and 5V
-#define UPPITY_SPINNER_MODE
-#ifdef UPPITY_SPINNER_MODE
-#define __ERROR(a)    _Pragma(#a)
-#define _ERROR( a) __ERROR(GCC error #a)
-#define Serial _ERROR(Cannot use Serial in Uppity Spinner Mode. RX pins used as pin A)
+#include "pin-map.h"
 
-#define SDA_PIN 21
-#define SCL_PIN 22
-#define RX_PIN 3
-
-#define LIGHTKIT_PIN_A RX_PIN
-#define LIGHTKIT_PIN_B SDA_PIN
-#define LIGHTKIT_PIN_C SCL_PIN
-#else
+#ifndef UPPITY_SPINNER_MODE
 //Command
 #define MAX_COMMAND_LENGTH 10
 char commandBuffer[MAX_COMMAND_LENGTH];
@@ -34,35 +21,29 @@ volatile boolean commandComplete = false;
 //main
 #define MAIN_NUMLEDS 9
 CRGB main_leds[MAIN_NUMLEDS];
-#define MAIN_PIN 27
 #define MAINSPEED 50
 
 //right
 #define RIGHT_NUMLEDS 9
 CRGB right_leds[RIGHT_NUMLEDS];
-#define RIGHT_PIN 25
 
 //left
 #define LEFT_NUMLEDS 9
 CRGB left_leds[LEFT_NUMLEDS];
-#define LEFT_PIN 16
 
 //bottom
 #define BOTTOM_NUMLEDS 8
 CRGB bottom_leds[BOTTOM_NUMLEDS];
-#define BOTTOM_PIN 17
 #define BOTTOMLEDSPEED  200
 
 //top
 #define TOP_NUMLEDS 7
 CRGB top_leds[TOP_NUMLEDS];
-#define TOP_PIN 33
 #define TOPSPEED 100
 
 //back
 #define BACK_NUMLEDS 3
 CRGB back_leds[BACK_NUMLEDS];
-#define BACK_PIN 26
 #define BACKSPEED 2000
 
 TopLeds    topLeds(top_leds,TOP_NUMLEDS);
@@ -81,7 +62,7 @@ void setup() {
   pinMode(LIGHTKIT_PIN_B, INPUT_PULLUP);
   pinMode(LIGHTKIT_PIN_C, INPUT_PULLUP);
 #endif
-    
+
   delay( 2000 ); // power-up safety delay
   FastLED.addLeds<WS2812, MAIN_PIN, GRB>(main_leds, MAIN_NUMLEDS).setCorrection( TypicalLEDStrip );
   FastLED.addLeds<WS2812, RIGHT_PIN, GRB>(right_leds, RIGHT_NUMLEDS).setCorrection( TypicalLEDStrip );
